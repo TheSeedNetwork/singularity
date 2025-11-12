@@ -1,8 +1,10 @@
+import com.theseednetwork.stitch.UploadSpec
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("io.papermc.paperweight.core") version "2.0.0-beta.19" apply false
+    id("com.theseednetwork.stitch") version "0.1.9"
 }
 
 subprojects {
@@ -70,5 +72,33 @@ tasks.register("printPaperVersion") {
     val paperVersion = provider { project.version }
     doLast {
         println(paperVersion.get())
+    }
+}
+
+tasks.register<Delete>("cleanSingularity") {
+    group = "singularity"
+
+    delete("$projectDir/paper-server/stitch")
+}
+
+tasks.register<Copy>("buildSingularity") {
+    group = "singularity"
+    dependsOn("cleanSingularity", ":paper-server:createMojmapBundlerJar")
+
+    from("paper-server/build/libs") {
+        include("paper-bundler-${version}-mojmap.jar")
+        rename("paper-bundler-${version}-mojmap.jar", "singularity-${version}.jar")
+    }
+
+    into("paper-server/stitch")
+
+    outputs.upToDateWhen { false }
+}
+
+stitch {
+    upload { spec ->
+        spec.type = UploadSpec.Type.SINGULARITY
+        spec.componentType = UploadSpec.ComponentType.BASE
+        spec.localPath = "$projectDir/paper-server/stitch"
     }
 }
