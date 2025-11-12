@@ -4,7 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("io.papermc.paperweight.core") version "2.0.0-beta.19" apply false
-    id("com.theseednetwork.stitch") version "0.1.9"
+    id("com.theseednetwork.stitch") version "0.2.0"
 }
 
 subprojects {

@@ -3,6 +3,15 @@ pluginManagement {
         gradlePluginPortal()
         mavenLocal()
         maven("https://repo.papermc.io/repository/maven-public/")
+        maven {
+            url = uri("http://40.160.34.222/repository/maven-private/")
+            isAllowInsecureProtocol = true
+
+            credentials {
+                username = settings.extra["nexusUsername"] as String
+                password = settings.extra["nexusPassword"] as String
+            }
+        }
     }
 }
 
